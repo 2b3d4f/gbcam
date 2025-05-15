@@ -170,7 +170,7 @@ els.echoDecay.addEventListener("input", () => {
 });
 
 // Pallets (from presets JSON)
-const data = await loadPresets("./presets.json");
+const data = await loadPresets("https://2b3d4f.github.io/gbcam-ts/presets.json");
 const rawPresets = data.presets;
 const defaultPresetId = data.default;
 const palettes: Record<string, Float32Array> = {};
