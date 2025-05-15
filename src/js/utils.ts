@@ -45,7 +45,7 @@ export interface Presets {
 /**
  * Load presets JSON from /presets.json
  */
-export async function loadPresets(): Promise<Presets> {
-  const data: Presets = await fetch("/presets.json").then((r) => r.json());
+export async function loadPresets(presets: string): Promise<Presets> {
+  const data: Presets = await fetch(presets).then((r) => r.json());
   return data;
 }
