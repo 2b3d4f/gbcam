@@ -136,7 +136,7 @@ els.camSel.addEventListener("change", async () => {
 try {
   await startStream({
     video: {
-      facingMode: { ideal: "enviroment" },
+      facingMode: { ideal: "environment" },
       width: { ideal: 1280 },
       height: { ideal: 720 },
     },
