@@ -1,5 +1,5 @@
-import { loadShaders, loadPresets } from "./js/utils.ts";
-import { initGL, compileShader, createProgram, createFBO } from "./js/webgl.ts";
+import { loadPresets, loadShaders } from "./js/utils.ts";
+import { compileShader, createFBO, createProgram, initGL } from "./js/webgl.ts";
 
 // DOM Elements
 function getEl<T extends HTMLElement>(id: string): T {
@@ -68,7 +68,7 @@ els.recordGifBtn.disabled = true;
 
 try {
   const resp = await fetch(
-    "https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.worker.js"
+    "https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.worker.js",
   );
   const text = await resp.text();
   const blob = new Blob([text], { type: "application/javascript" });
@@ -99,7 +99,7 @@ const startStream = async (constraints: MediaStreamConstraints) => {
   } catch (err) {
     console.error("getUserMedia failed:", err);
     alert(
-      "Unable to access the camera. Please check your browser's permission settings."
+      "Unable to access the camera. Please check your browser's permission settings.",
     );
     return null;
   }
@@ -178,7 +178,7 @@ els.paletteSel.innerHTML = "";
 rawPresets.forEach((preset) => {
   // Flatten and normalize colors into a single Float32Array
   palettes[preset.id] = new Float32Array(
-    preset.colors.flat().map((v) => v / 255)
+    preset.colors.flat().map((v) => v / 255),
   );
   const opt = document.createElement("option");
   opt.value = preset.id;
@@ -229,7 +229,22 @@ gl.useProgram(prog);
 
 // Quad Geometry
 const quad = new Float32Array([
-  -1, -1, 0, 0, 1, -1, 1, 0, -1, 1, 0, 1, 1, 1, 1, 1,
+  -1,
+  -1,
+  0,
+  0,
+  1,
+  -1,
+  1,
+  0,
+  -1,
+  1,
+  0,
+  1,
+  1,
+  1,
+  1,
+  1,
 ]);
 const vao = gl.createVertexArray();
 gl.bindVertexArray(vao);
@@ -248,7 +263,7 @@ gl.vertexAttribPointer(
   gl.FLOAT,
   false,
   stride,
-  2 * Float32Array.BYTES_PER_ELEMENT
+  2 * Float32Array.BYTES_PER_ELEMENT,
 );
 
 // Texture from Webcam
@@ -334,8 +349,9 @@ let lastVidH = 0;
 
 const updateCrop = () => {
   if (!els.video.videoWidth || !els.video.videoHeight) return;
-  if (els.video.videoWidth === lastVidW && els.video.videoHeight === lastVidH)
+  if (els.video.videoWidth === lastVidW && els.video.videoHeight === lastVidH) {
     return;
+  }
 
   lastVidW = els.video.videoWidth;
   lastVidH = els.video.videoHeight;
@@ -350,7 +366,7 @@ const updateCrop = () => {
     0,
     gl.RGB,
     gl.UNSIGNED_BYTE,
-    null
+    null,
   );
   textureInitialized = true;
 
@@ -400,7 +416,7 @@ const render = (now = 0) => {
         0,
         gl.RGB,
         gl.UNSIGNED_BYTE,
-        null
+        null,
       );
       textureInitialized = true;
     }
@@ -423,7 +439,7 @@ const render = (now = 0) => {
       0,
       gl.RGB,
       gl.UNSIGNED_BYTE,
-      els.video
+      els.video,
     );
   }
 
@@ -529,8 +545,9 @@ els.closeDialog.addEventListener("click", () => els.captureDialog.close());
 els.closeGifDialog.addEventListener("click", () => els.gifDialog.close());
 // Settings dialog open/close
 els.settingsBtn.addEventListener("click", () => els.settingsDialog.showModal());
-els.closeSettingsDialog.addEventListener("click", () =>
-  els.settingsDialog.close()
+els.closeSettingsDialog.addEventListener(
+  "click",
+  () => els.settingsDialog.close(),
 );
 
 // ================= GIF Recording Logic =================
@@ -566,6 +583,8 @@ els.recordGifBtn.addEventListener("click", () => {
     frameCount++;
     if (frameCount >= totalFrames) {
       clearInterval(recordInterval);
+      // Clear recording tooltip once frames are captured
+      els.recordGifBtn.title = "";
       // Restore FPS after finishing recording
       gif.on("finished", (blob: Blob) => {
         const url = URL.createObjectURL(blob);
@@ -578,10 +597,11 @@ els.recordGifBtn.addEventListener("click", () => {
             URL.revokeObjectURL(url);
             els.recordGifBtn.disabled = false;
             els.recordGifBtn.textContent = "🔴";
+            els.recordGifBtn.title = "Record GIF";
             els.captureBtn.disabled = false;
             els.settingsBtn.disabled = false;
           },
-          { once: true }
+          { once: true },
         );
       });
       gif.render();
